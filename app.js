@@ -237,6 +237,15 @@ const flatSessions = PLAN.flatMap((w) => w.sessions.map((s) => ({ ...s, week: w.
 const totalSessions = flatSessions.length;
 const LAST_SESSION = flatSessions[flatSessions.length - 1];
 
+function autoTime(raw) {
+  const digits = String(raw).replace(/\D/g, "").slice(0, 6);
+  if (digits.length <= 2) return digits;
+  const parts = []; let s = digits;
+  while (s.length > 2) { parts.unshift(s.slice(-2)); s = s.slice(0, -2); }
+  parts.unshift(s);
+  return parts.join(":");
+}
+
 function parseTime(str) {
   if (!str) return null;
   const parts = String(str).split(":").map((p) => parseInt(p, 10));
@@ -531,7 +540,7 @@ function openDetail(week, day) {
 
   const recalc = () => ($("fPace").textContent = fmtPace(paceSeconds($("fDistance").value, $("fTime").value)) || "—");
   $("fDistance").addEventListener("input", recalc);
-  $("fTime").addEventListener("input", recalc);
+  $("fTime").addEventListener("input", () => { $("fTime").value = autoTime($("fTime").value); recalc(); });
 
   const collect = () => ({
     ...log[id],
