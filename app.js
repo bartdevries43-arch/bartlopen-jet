@@ -1,25 +1,27 @@
 /* ================================================================== *
  *  Jet — Run Coach · Zomer-opbouw richting de 10K van Rotterdam
  *  Beginnersblok (hardlopen–wandelen), voet-vriendelijk opgebouwd.
- *  Shell gelijk aan Kim (hoofdapp); alleen data + kleuren zijn van Jet.
+ *  Alles lokaal in de browser. Geen server nodig (werkt ook via file://).
  * ================================================================== */
 
-/* ========== INSTELLINGEN PER HARDLOPER — pas dit blok aan ========== */
+/* ========== INSTELLINGEN PER HARDLOPER — pas dit blok aan ==========
+   Hergebruik deze app voor een andere loper: kopieer de map, wijzig dit
+   blok, vervang coach.jpg, en pas zo nodig het PLAN/de ZONES aan.       */
 const CONFIG = {
-  appName:    "Jet · op naar 10K",
-  runner:     "Jet",
-  goal:       "Zomerblok richting de 10K van Rotterdam",
-  startDate:  new Date(2026, 6, 13),      // maandag van week 1 (maand 0-based: 6 = juli)
-  storeKey:   "jet10k.zomer.v1",          // UNIEK — niet wijzigen (behoudt voortgang)
-  unit:       "km",                        // "km" of "min" — Jet werkt op km
-  zonePaceSuffix: "",                      // "" = geen /km tonen (Jet loopt op gevoel/RPE)
-  subgoalKicker: "🎯 Grote doel · 11 apr 2027",
-  subgoalText:   "10 km van Rotterdam — samen met je zus",
-  coachName:  "Coach Bart",
-  coachHandle:"@bartlopen",
-  coachPhoto: "coach.jpg",
-  athleteWord:"strijder",
-  catchphrase:"Stap voor stap, strijder!",
+  unit:       "km",
+  zonePaceSuffix: "",
+  footEmoji:  "🏃‍♀️",
+  mottos: ["Stap voor stap, strijder!", "Lekker begonnen, strijder!", "Je bouwt 'm op, strijder.", "Halverwege — doorpakken! ⚡", "Bijna de finale, strijder!", "Zomer rond! Trots op je, strijder! 🌞"],
+  appName:    "Jet · op naar 10K",   // titel boven in de app
+  runner:     "Jet",                 // naam van de loper
+  goal:       "Zomerblok richting de 10K van Rotterdam", // doel (groot in de hero)
+  startDate:  new Date(2026, 6, 13), // maandag van week 1 (maand 0-based: 6 = juli)
+  storeKey:   "jet10k.zomer.v1",     // UNIEKE opslagsleutel — per loper anders!
+  coachName:  "Coach Bart",          // naam van de coach
+  coachHandle:"@bartlopen",          // TikTok/social van de coach
+  coachPhoto: "coach.jpg",           // coachfoto (bestand in deze map)
+  athleteWord:"strijder",              // hoe de coach de loper aanspreekt
+  catchphrase:"Stap voor stap, strijder!", // jouw TikTok-leus
 };
 /* =================================================================== */
 
@@ -41,15 +43,6 @@ const ZONES = [
   { key: "lang",     name: "Iets langere duurloop", pace: "rustig",     info: "RPE 4 · de langste van je week" },
 ];
 const zoneByKey = Object.fromEntries(ZONES.map((z) => [z.key, z]));
-
-/* --- Willekeurige "gedaan"-complimentjes --------------------------- */
-const DONE = [
-  "💪 Knap gedaan, strijder!",
-  "🔥 Weer eentje afgevinkt — trots op je!",
-  "👏 Lekker bezig, strijder. Stap voor stap.",
-  "🌟 Mooi volgehouden. Zo bouw je 'm op.",
-  "✅ Weer een stukje sterker geworden.",
-];
 
 /* --- Coach Bart (@bartlopen): warme, motiverende praat per type ----- */
 const COACH = {
@@ -84,6 +77,14 @@ const coachLine = (zone) => {
 };
 
 /* --- Waarom deze training? (uitleg per type) ----------------------- */
+const DONE = [
+  "💪 Knap gedaan, strijder!",
+  "🔥 Weer eentje afgevinkt — trots op je!",
+  "👏 Lekker bezig, strijder.",
+  "🌟 Mooi volgehouden. Zo bouw je 'm op.",
+  "✅ Weer een stukje sterker geworden.",
+];
+
 const WHY = {
   interval: "Door hardlopen en wandelen af te wisselen bouw je rustig conditie op zónder je voet en benen te overbelasten. De wandelpauzes laten je herstellen, zodat je vaker kunt trainen en de kans op blessures klein blijft. Precies wat je nu nodig hebt.",
   duur:     "Rustig aaneengesloten hardlopen op praattempo bouwt je basisconditie: een sterker hart en benen die langer meegaan. Rustig is hier écht goed — je hoeft nog niet snel te kunnen.",
@@ -95,7 +96,9 @@ const WHY = {
 const ma = (o) => ({ day: "ma", dayLabel: "Maandag",   kind: "Hardlopen–wandelen", ...o });
 const dn = (o) => ({ day: "do", dayLabel: "Donderdag", kind: "Hardlopen–wandelen", ...o });
 
-/* --- Het 7-weken zomerblok (alleen ma + do) ------------------------ */
+/* --- Het 7-weken zomerblok (alleen ma + do) ------------------------ *
+ *  Doel: van bijna-beginner rustig opbouwen tot ~20-25 min
+ *  aaneengesloten kunnen hardlopen — met de rechtervoet ontzien.       */
 const PLAN = [
   { week: 1, dates: "13–19 jul", phase: "Fase 1 · Wennen (hardlopen–wandelen)", sessions: [
     ma({ zone: "interval", km: 3, title: "Kennismaken · 6× 1 min", goal: "Rustig beginnen, je voet voelen", blocks: [
@@ -171,7 +174,7 @@ const PLAN = [
       "5 min uitwandelen",
     ] }),
   ]},
-  { week: 7, dates: "24–30 aug", phase: "Fase 3 · Naar aaneengesloten lopen", finish: true, raceLabel: "🌞 Zomer-finale", sessions: [
+  { week: 7, dates: "24–30 aug", phase: "Fase 3 · Naar aaneengesloten lopen", finish: true, sessions: [
     ma({ zone: "duur", km: 4.5, kind: "Rustige duurloop", title: "Soepel · 2× 10 min", goal: "Benen fris houden voor de finale", blocks: [
       "5 min inwandelen",
       "2× 10 min rustig hardlopen / 3 min wandelen",
@@ -249,7 +252,7 @@ const sid = (week, day) => `w${week}-${day}`;
 const flatSessions = PLAN.flatMap((w) => w.sessions.map((s) => ({ ...s, week: w.week })));
 const totalSessions = flatSessions.length;
 const LAST_SESSION = flatSessions[flatSessions.length - 1];
-const DAY_OFFSET = { ma: 0, di: 1, wo: 2, do: 3, vr: 4, za: 5, zo: 6 };
+const DAY_OFFSET = { ma: 0, di: 1, wo: 2, do: 3, vr: 4, za: 5, zo: 6, d1: 0, d2: 2, d3: 4, d4: 6 };
 
 const escapeHtml = (value = "") => String(value)
   .replaceAll("&", "&amp;")
@@ -378,7 +381,7 @@ function renderHero(stats) {
   fg.style.strokeDasharray = c;
   fg.style.strokeDashoffset = c;
   requestAnimationFrame(() => { fg.style.strokeDashoffset = c * (1 - pct / 100); });
-  const mottos = ["Zet 'm op, strijder!", "Lekker bezig, strijder!", "Je bouwt 'm rustig op, strijder.", "Halverwege — knap volgehouden! ⚡", "Bijna race-klaar, strijder!", "Finisher! Wat een prestatie, strijder. 🏅"];
+  const mottos = CONFIG.mottos || ["Zet 'm op, strijder!", "Lekker bezig, strijder!", "Je bouwt 'm rustig op, strijder.", "Halverwege — knap volgehouden! ⚡", "Bijna race-klaar, strijder!", "Finisher! Wat een prestatie, strijder. 🏅"];
   $("heroMotto").textContent =
     stats.raceDone ? mottos[5] : pct >= 80 ? mottos[4] : pct >= 50 ? mottos[3] : pct >= 20 ? mottos[2] : pct > 0 ? mottos[1] : mottos[0];
   renderCountdown();
@@ -828,7 +831,7 @@ if ($("brandHandle")) $("brandHandle").textContent = CONFIG.coachHandle;
 if ($("footCredit")) {
   $("footCredit").innerHTML =
     `<span class="catch">${CONFIG.catchphrase}</span>` +
-    `Coaching door ${CONFIG.coachName} · TikTok <strong>${CONFIG.coachHandle}</strong> 🏃‍♀️`;
+    `Coaching door ${CONFIG.coachName} · TikTok <strong>${CONFIG.coachHandle}</strong> ${CONFIG.footEmoji || "🏃\u200d♀️"}`;
 }
 
 function setPlanningForm(open) {
@@ -928,7 +931,7 @@ function calendarFile() {
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${icsDay(date)}`,
       `DTEND;VALUE=DATE:${icsDay(addDays(date, 1))}`,
-      `SUMMARY:${icsEscape(`🏃‍♀️ ${session.title}`)}`,
+      `SUMMARY:${icsEscape(`${CONFIG.footEmoji || "🏃\u200d♀️"} ${session.title}`)}`,
       `DESCRIPTION:${icsEscape(`${session[UNIT]} ${UNIT_LABEL} · ${z.name}\n${session.goal}\n\n${session.blocks.join("\n")}`)}`,
       "TRANSP:TRANSPARENT",
       "END:VEVENT",
