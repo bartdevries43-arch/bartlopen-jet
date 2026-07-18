@@ -38,9 +38,9 @@ const COACH_INITIAL = (CONFIG.coachName.replace(/^coach\s+/i, "")[0] || "C").toU
 /* --- Tempozones (niveau: beginner, op gevoel/RPE, nog niet op tempo) -- */
 const ZONES = [
   { key: "herstel",  name: "Wandelen & herstel",    pace: "rustig",     info: "RPE 1-2 · op adem komen" },
-  { key: "interval", name: "Hardlopen–wandelen",    pace: "afwisselen", info: "RPE 3-4 in de loopstukjes · praten kan" },
+  { key: "interval", name: "Hardlopen en wandelen", pace: "afwisselen", info: "RPE 3-4 in de loopstukjes · praten kan" },
   { key: "duur",     name: "Rustig hardlopen",      pace: "praattempo", info: "RPE 3-4 · je kunt nog kletsen" },
-  { key: "lang",     name: "Iets langere duurloop", pace: "rustig",     info: "RPE 4 · de langste van je week" },
+  { key: "lang",     name: "Langer rustig lopen",   pace: "rustig",     info: "RPE 4 · de langste van je week" },
 ];
 const zoneByKey = Object.fromEntries(ZONES.map((z) => [z.key, z]));
 
@@ -93,8 +93,13 @@ const WHY = {
 };
 
 /* --- Helpers om het schema compact te schrijven -------------------- */
-const ma = (o) => ({ day: "ma", dayLabel: "Maandag",   kind: "Hardlopen–wandelen", ...o });
-const dn = (o) => ({ day: "do", dayLabel: "Donderdag", kind: "Hardlopen–wandelen", ...o });
+const ma = (o) => ({ day: "ma", dayLabel: "Maandag",   kind: "Hardlopen en wandelen", ...o });
+const dn = (o) => ({ day: "do", dayLabel: "Donderdag", kind: "Hardlopen en wandelen", ...o });
+const runWalkBlock = (repeats, runMinutes, walkMinutes, runText = "rustig hardlopen") => {
+  const nl = (value) => String(value).replace(".", ",");
+  const pauses = Math.max(0, repeats - 1);
+  return `${repeats}× ${nl(runMinutes)} min ${runText}; wandel ${nl(walkMinutes)} min tussen de loopblokken (${pauses} wandelpauzes, niet na het laatste blok)`;
+};
 
 /* --- Het 7-weken zomerblok (alleen ma + do) ------------------------ *
  *  Doel: van bijna-beginner rustig opbouwen tot ~20-25 min
@@ -103,81 +108,81 @@ const PLAN = [
   { week: 1, dates: "13–19 jul", phase: "Fase 1 · Wennen (hardlopen–wandelen)", sessions: [
     ma({ zone: "interval", km: 3, title: "Kennismaken · 6× 1 min", goal: "Rustig beginnen, je voet voelen", blocks: [
       "5 min stevig inwandelen",
-      "6× 1 min rustig hardlopen, met 2 min wandelen ertussen",
+      runWalkBlock(6, 1, 2),
       "5 min uitwandelen",
       "Voet-check: zeurderig (≤ 3/10) mag, meer pijn of mank lopen = stoppen",
     ] }),
     dn({ zone: "interval", km: 3, title: "Herhaling · 6× 1 min", goal: "Patroon herhalen, niets forceren", blocks: [
       "5 min inwandelen",
-      "6× 1 min rustig hardlopen / 2 min wandelen",
+      runWalkBlock(6, 1, 2),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 2, dates: "20–26 jul", phase: "Fase 1 · Wennen (hardlopen–wandelen)", sessions: [
     ma({ zone: "interval", km: 3.5, title: "7× 1,5 min", goal: "Iets langere loopstukjes", blocks: [
       "5 min inwandelen",
-      "7× 1,5 min hardlopen / 1,5 min wandelen",
+      runWalkBlock(7, 1.5, 1.5),
       "5 min uitwandelen",
     ] }),
     dn({ zone: "interval", km: 3.5, title: "6× 2 min", goal: "Even doorlopen, dan wandelen", blocks: [
       "5 min inwandelen",
-      "6× 2 min hardlopen / 2 min wandelen",
+      runWalkBlock(6, 2, 2),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 3, dates: "27 jul–2 aug", phase: "Fase 2 · Langere loopstukken", sessions: [
     ma({ zone: "interval", km: 4, title: "5× 3 min", goal: "Wandelpauzes worden korter", blocks: [
       "5 min inwandelen",
-      "5× 3 min hardlopen / 2 min wandelen",
+      runWalkBlock(5, 3, 2),
       "5 min uitwandelen",
     ] }),
     dn({ zone: "interval", km: 4, title: "4× 4 min", goal: "Langer aaneengesloten lopen", blocks: [
       "5 min inwandelen",
-      "4× 4 min hardlopen / 2 min wandelen",
+      runWalkBlock(4, 4, 2),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 4, dates: "3–9 aug", phase: "Fase 2 · Langere loopstukken", recovery: true, sessions: [
     ma({ zone: "interval", km: 3.5, title: "Rustige week · 5× 2 min", goal: "Been & voet bijtanken", blocks: [
       "5 min inwandelen",
-      "5× 2 min rustig hardlopen / 1,5 min wandelen",
+      runWalkBlock(5, 2, 1.5),
       "5 min uitwandelen",
       "Voelt de voet prima? Dan volgende week weer door.",
     ] }),
     dn({ zone: "interval", km: 3.5, title: "Rustige week · 4× 3 min", goal: "Soepel blijven, niet forceren", blocks: [
       "5 min inwandelen",
-      "4× 3 min rustig hardlopen / 2 min wandelen",
+      runWalkBlock(4, 3, 2),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 5, dates: "10–16 aug", phase: "Fase 3 · Naar aaneengesloten lopen", sessions: [
     ma({ zone: "interval", km: 4.5, title: "4× 5 min", goal: "Blokken van 5 minuten", blocks: [
       "5 min inwandelen",
-      "4× 5 min hardlopen / 2 min wandelen",
+      runWalkBlock(4, 5, 2),
       "5 min uitwandelen",
     ] }),
     dn({ zone: "interval", km: 4.5, title: "3× 7 min", goal: "Langer doorlopen", blocks: [
       "5 min inwandelen",
-      "3× 7 min hardlopen / 2 min wandelen",
+      runWalkBlock(3, 7, 2),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 6, dates: "17–23 aug", phase: "Fase 3 · Naar aaneengesloten lopen", sessions: [
     ma({ zone: "interval", km: 5, title: "3× 8 min", goal: "Bijna doorlopen", blocks: [
       "5 min inwandelen",
-      "3× 8 min hardlopen / 2 min wandelen",
+      runWalkBlock(3, 8, 2),
       "5 min uitwandelen",
     ] }),
-    dn({ zone: "duur", km: 5, kind: "Rustige duurloop", title: "2× 12 min", goal: "Eerste lange aaneengesloten stukken", blocks: [
+    dn({ zone: "duur", km: 5, kind: "Rustig hardlopen", title: "2× 12 min", goal: "Eerste lange aaneengesloten stukken", blocks: [
       "5 min inwandelen",
-      "2× 12 min rustig hardlopen / 3 min wandelen ertussen",
+      runWalkBlock(2, 12, 3),
       "5 min uitwandelen",
     ] }),
   ]},
   { week: 7, dates: "24–30 aug", phase: "Fase 3 · Naar aaneengesloten lopen", finish: true, sessions: [
-    ma({ zone: "duur", km: 4.5, kind: "Rustige duurloop", title: "Soepel · 2× 10 min", goal: "Benen fris houden voor de finale", blocks: [
+    ma({ zone: "duur", km: 4.5, kind: "Rustig hardlopen", title: "Soepel · 2× 10 min", goal: "Benen fris houden voor de finale", blocks: [
       "5 min inwandelen",
-      "2× 10 min rustig hardlopen / 3 min wandelen",
+      runWalkBlock(2, 10, 3),
       "5 min uitwandelen",
     ] }),
     dn({ zone: "lang", km: 5.5, kind: "Mijlpaal", title: "🌞 Zomer-finale · 20–25 min non-stop", goal: "In één keer doorlopen, trots afsluiten", blocks: [
@@ -191,6 +196,10 @@ const PLAN = [
 
 /* --- Extra advies (info-kaarten) ----------------------------------- */
 const INFO = [
+  { icon: "🔢", title: "Zo lees je de blokken", items: [
+    "5× 3 min betekent vijf loopblokken van drie minuten.",
+    "Je wandelt alleen tussen de loopblokken. Vijf blokken hebben dus vier wandelpauzes.",
+    "Na het laatste loopblok ga je meteen uitwandelen; er komt geen extra pauze meer bij." ] },
   { icon: "🎯", title: "Het grote doel", items: [
     "10 km van Rotterdam op zondag 11 april 2027, samen met je zus. 🏁",
     "Deze zomer is stap 1: rustig een basis opbouwen en je voet ontzien.",
