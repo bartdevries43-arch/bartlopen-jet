@@ -197,7 +197,7 @@ const PLAN = [
 /* --- Extra advies (info-kaarten) ----------------------------------- */
 const INFO = [
   { icon: "🔢", title: "Zo lees je de blokken", items: [
-    "5× 3 min betekent vijf loopblokken van drie minuten.",
+    "5× 3 min betekent: vijf loopblokken van drie minuten.",
     "Je wandelt alleen tussen de loopblokken. Vijf blokken hebben dus vier wandelpauzes.",
     "Na het laatste loopblok ga je meteen uitwandelen; er komt geen extra pauze meer bij." ] },
   { icon: "🎯", title: "Het grote doel", items: [

@@ -1,10 +1,10 @@
 /* Eenvoudige offline-cache voor Run Coach. Verhoog CACHE bij elke update. */
-const CACHE = "runcoach-jet-v6-blokkencheck";
+const CACHE = "runcoach-jet-v6-blokkencheck-p2";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=8-c2-c3",
-  "./app.js?v=9-blokkencheck",
+  "./styles.css?v=8-c2-c3-p2",
+  "./app.js?v=9-blokkencheck-p2",
   "./coach.jpg",
   "./coach-logo.png",
   "./bartlopen-runcoach.png",
